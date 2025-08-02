@@ -6,7 +6,7 @@ module.exports = function (bot) {
   bot.command('linkdrop', (ctx) => {
     const id = ctx.from.id;
     state[id] = { step: 'awaiting_link' };
-    ctx.reply('Drop the Apollo URL to scrape 👇');
+    ctx.reply('Drop the Apollo URL to scrape beloow👇');
   });
 
   bot.on('text', async (ctx) => {
