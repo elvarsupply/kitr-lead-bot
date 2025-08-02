@@ -17,19 +17,18 @@ module.exports = function (bot) {
 
     if (state[id].step === 'awaiting_link') {
       state[id].link = msg;
-      state[id].step = 'awaiting_leads';
+      state[id].step = 'awaiting_employees';
       ctx.reply('👥 Estimated leads?');
-    } else if (state[id].step === 'awaiting_leads') {
+    } else if (state[id].step === 'awaiting_employees') {
       try {
         await axios.post(process.env.WEBHOOK_URL, {
           type: 'linkdrop',
           from: ctx.from.username || ctx.from.first_name || '',
           link: state[id].link,
-          estimated_leads: msg,
+          employeeCap: msg,
         });
-        ctx.reply('✅ Link + leads submitted!');
+        // No success reply
       } catch (err) {
-        console.error('Webhook error:', err);
         ctx.reply('❌ Webhook failed.');
       }
       delete state[id];
