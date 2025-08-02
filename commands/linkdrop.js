@@ -6,12 +6,15 @@ module.exports = function (bot) {
   bot.command('linkdrop', (ctx) => {
     const id = ctx.from.id;
     state[id] = { step: 'awaiting_link' };
-    ctx.reply('🔗 Drop the Apollo URL to scrape:');
+    ctx.reply('Drop the Apollo URL to scrape 👇');
   });
 
-  bot.hears(/.*/, async (ctx) => {
+  bot.on('text', async (ctx) => {
     const id = ctx.from.id;
     const msg = ctx.message.text;
+
+    // ⛔️ Ignore commands in text handler
+    if (msg.startsWith('/')) return;
 
     if (!state[id]) return;
 
@@ -27,9 +30,10 @@ module.exports = function (bot) {
           link: state[id].link,
           estimated_leads: msg,
         });
-        ctx.reply('✅ Submitted!');
+        // Optionally confirm:
+        // ctx.reply('✅ Submitted!');
       } catch (err) {
-        console.error('Webhook failed:', err);
+        console.error(err);
         ctx.reply('❌ Webhook failed.');
       }
       delete state[id];
