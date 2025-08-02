@@ -9,7 +9,7 @@ module.exports = function (bot) {
     ctx.reply('🔗 Drop the Apollo URL to scrape:');
   });
 
-  bot.on('text', async (ctx) => {
+  bot.hears(/.*/, async (ctx) => {
     const id = ctx.from.id;
     const msg = ctx.message.text;
 
@@ -17,18 +17,19 @@ module.exports = function (bot) {
 
     if (state[id].step === 'awaiting_link') {
       state[id].link = msg;
-      state[id].step = 'awaiting_employees';
+      state[id].step = 'awaiting_leads';
       ctx.reply('👥 Estimated leads?');
-    } else if (state[id].step === 'awaiting_employees') {
+    } else if (state[id].step === 'awaiting_leads') {
       try {
         await axios.post(process.env.WEBHOOK_URL, {
           type: 'linkdrop',
           from: ctx.from.username || ctx.from.first_name || '',
           link: state[id].link,
-          employeeCap: msg,
+          estimated_leads: msg,
         });
-        // No success reply
+        ctx.reply('✅ Submitted!');
       } catch (err) {
+        console.error('Webhook failed:', err);
         ctx.reply('❌ Webhook failed.');
       }
       delete state[id];
