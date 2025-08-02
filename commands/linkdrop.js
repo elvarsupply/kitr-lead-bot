@@ -6,7 +6,7 @@ module.exports = function (bot) {
   bot.command('linkdrop', (ctx) => {
     const id = ctx.from.id;
     state[id] = { step: 'awaiting_link' };
-    ctx.reply('Drop the Apollo URL to scrape 👇');
+    ctx.reply('🔗 Drop the Apollo URL to scrape:');
   });
 
   bot.on('text', async (ctx) => {
@@ -27,9 +27,9 @@ module.exports = function (bot) {
           link: state[id].link,
           estimated_leads: msg,
         });
-        // ctx.reply('✅ Submitted!');
+        ctx.reply('✅ Link + leads submitted!');
       } catch (err) {
-        console.error(err);
+        console.error('Webhook error:', err);
         ctx.reply('❌ Webhook failed.');
       }
       delete state[id];
